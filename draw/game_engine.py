@@ -1,3 +1,4 @@
+from tkinter import font
 import pygame
 from pygame import Surface
 from model.board_structure import BoardStructure
@@ -66,6 +67,25 @@ class GameEngine:
                          (self.screen.get_width() / 2 + self.screen.get_width() / 16,
                           self.screen.get_height() / 2 + self.screen.get_height() / 6))
 
+    def show_winning_screen(self):
+        self.screen.fill((0, 0, 0))
+        font = pygame.font.SysFont('arial', 50, bold=True)
+        title = font.render('You Win!', True, (0, 255, 0))
+        subtext = pygame.font.SysFont('arial', 30).render('Press Space to Restart', True, (255, 255, 255))
+        # Center the text
+        self.screen.blit(title, (self.screen.get_width() / 2 - title.get_width() / 2,
+                        self.screen.get_height() / 2 - title.get_height() / 2))
+        self.screen.blit(subtext, (self.screen.get_width() / 2 - subtext.get_width() / 2, 
+                        self.screen.get_height() / 2 + title.get_height()))
+        
+    def all_dots_eaten(self):
+        # Returns True if no DOT or BIG_DOT left on the board
+        for row in self.board:
+            for cell in row:
+                if cell == BoardStructure.DOT.value or cell == BoardStructure.BIG_DOT.value:
+                    return False
+        return True
+    
     def tick(self):
         if self.player.lives == -1:
             self.game_over = True
@@ -87,6 +107,10 @@ class GameEngine:
                 self.move_player()
                 self.move_ghosts()
                 self.check_ghosts_and_player_collision()
+                # NEW: check if all dots are eaten
+                if self.all_dots_eaten():
+                    self.show_winning_screen()
+                    return  # Stop further game logic
             elif self.player.is_eaten():
                 self.player.play_death_animation(self.screen)
             if DEBUG:

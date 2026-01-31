@@ -13,8 +13,8 @@ from settings import *
 
 
 class Player(Entity):
-    def __init__(self, sprites: list, center_position: Tuple, turns: Turns, space_params: SpaceParams, death_sprites: list, velocity=2,
-                 lives=3):
+    def __init__(self, sprites: list, center_position: Tuple, turns: Turns, space_params: SpaceParams, death_sprites: list, velocity=PLAYER_SPEED,
+             lives=3):
         super().__init__(center_position, turns, space_params, velocity)
         self.sprites = sprites
         self.death_sprites = death_sprites
